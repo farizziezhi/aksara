@@ -21,7 +21,10 @@ export interface SearchSuccessResponse {
   results: PaperResult[];
 }
 
-export type SearchErrorCode = "BAD_REQUEST" | "SERVICE_UNAVAILABLE";
+export type SearchErrorCode =
+  | "BAD_REQUEST"
+  | "RATE_LIMITED"
+  | "SERVICE_UNAVAILABLE";
 
 export interface SearchErrorResponse {
   error: SearchErrorCode;
