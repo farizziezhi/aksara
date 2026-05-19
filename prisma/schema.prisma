@@ -1,7 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// Prisma schema — see docs/DATABASE.md
 
 generator client {
   provider = "prisma-client"
@@ -10,4 +7,60 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+}
+
+model Paper {
+  id             String   @id
+  title          String
+  abstract       String?
+  year           Int?
+  doi            String?  @unique
+  pdf_url        String?
+  source         String
+  citation_count Int      @default(0)
+  is_open_access Boolean  @default(true)
+  fetched_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  authors        Author[]
+  queries        CachedQueryResult[]
+
+  @@index([doi])
+}
+
+model Author {
+  id       Int    @id @default(autoincrement())
+  name     String
+  paper_id String
+
+  paper    Paper  @relation(fields: [paper_id], references: [id], onDelete: Cascade)
+
+  @@index([paper_id])
+}
+
+model CachedQuery {
+  id           Int      @id @default(autoincrement())
+  query_hash   String   @unique
+  query_raw    String
+  result_count Int
+  created_at   DateTime @default(now())
+  expires_at   DateTime
+
+  results      CachedQueryResult[]
+
+  @@index([query_hash])
+  @@index([expires_at])
+}
+
+model CachedQueryResult {
+  id       Int    @id @default(autoincrement())
+  query_id Int
+  paper_id String
+  rank     Int
+
+  query    CachedQuery @relation(fields: [query_id], references: [id], onDelete: Cascade)
+  paper    Paper       @relation(fields: [paper_id], references: [id], onDelete: Cascade)
+
+  @@index([query_id])
+  @@index([paper_id])
 }
