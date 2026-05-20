@@ -3,6 +3,8 @@ import { searchOpenAlex } from "./sources/openalex";
 import { searchCORE } from "./sources/core";
 import { searchArXiv } from "./sources/arxiv";
 import { searchDOAJ } from "./sources/doaj";
+import { searchCrossref } from "./sources/crossref";
+import { searchSemanticScholar } from "./sources/semantic-scholar";
 import { deduplicate } from "./deduplicator";
 import { rank } from "./ranker";
 
@@ -26,9 +28,18 @@ const REGISTRY: Record<Exclude<SourceName, "Unpaywall">, SourceFn> = {
   CORE: searchCORE,
   arXiv: searchArXiv,
   DOAJ: searchDOAJ,
+  Crossref: searchCrossref,
+  SemanticScholar: searchSemanticScholar,
 };
 
-const DEFAULT_SOURCES: SourceName[] = ["OpenAlex", "CORE", "arXiv", "DOAJ"];
+const DEFAULT_SOURCES: SourceName[] = [
+  "OpenAlex",
+  "CORE",
+  "arXiv",
+  "DOAJ",
+  "Crossref",
+  "SemanticScholar",
+];
 
 export async function aggregate(opts: AggregateOptions): Promise<AggregateResult> {
   const limit = opts.perSourceLimit ?? 25;

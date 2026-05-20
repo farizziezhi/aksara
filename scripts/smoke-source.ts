@@ -2,6 +2,8 @@ import { searchOpenAlex } from "../lib/sources/openalex";
 import { searchCORE } from "../lib/sources/core";
 import { searchArXiv } from "../lib/sources/arxiv";
 import { searchDOAJ } from "../lib/sources/doaj";
+import { searchCrossref } from "../lib/sources/crossref";
+import { searchSemanticScholar } from "../lib/sources/semantic-scholar";
 import { getOpenAccessLink } from "../lib/sources/unpaywall";
 import type { PaperResult, SourceName } from "../types/paper";
 
@@ -39,6 +41,8 @@ async function main() {
   await run("CORE", () => searchCORE(query, 3));
   await run("arXiv", () => searchArXiv(query, 3));
   await run("DOAJ", () => searchDOAJ(query, 3));
+  await run("Crossref", () => searchCrossref(query, 3));
+  await run("SemanticScholar", () => searchSemanticScholar(query, 3));
   await run("Unpaywall", async () => (await getOpenAccessLink(sampleDoi)) ?? "(no OA link)");
 }
 

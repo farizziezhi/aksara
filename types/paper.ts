@@ -3,6 +3,8 @@ export const SOURCE_NAMES = [
   "CORE",
   "arXiv",
   "DOAJ",
+  "Crossref",
+  "SemanticScholar",
   "Unpaywall",
 ] as const;
 
