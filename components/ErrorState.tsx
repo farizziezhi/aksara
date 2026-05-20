@@ -7,15 +7,15 @@ export function ErrorState({ message, onRetry }: Props) {
   return (
     <div
       role="alert"
-      className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200"
+      className="rounded-card border border-hairline bg-canvas-white p-6 shadow-[var(--shadow-subtle)]"
     >
-      <p className="font-medium">Tidak dapat memuat hasil</p>
-      <p className="mt-1">{message}</p>
+      <p className="text-subheading font-semibold text-ink-black">Tidak dapat memuat hasil</p>
+      <p className="mt-2 text-body-sm text-deep-slate">{message}</p>
       {onRetry ? (
         <button
           type="button"
           onClick={onRetry}
-          className="mt-3 inline-flex items-center rounded-lg border border-red-300 bg-white px-3 py-1.5 text-sm font-medium text-red-800 hover:bg-red-100 dark:border-red-800 dark:bg-red-950 dark:text-red-200 dark:hover:bg-red-900/40"
+          className="mt-5 inline-flex items-center rounded-pill bg-button-black px-[14px] py-[6px] text-body-sm font-medium text-canvas-white shadow-[var(--shadow-button)] transition hover:opacity-90"
         >
           Coba lagi
         </button>

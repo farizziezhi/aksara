@@ -38,27 +38,29 @@ export function RelatedPapers({ paperId }: Props) {
   }, [open, paperId, results.length]);
 
   return (
-    <div className="w-full pt-2">
+    <div className="mt-5 border-t border-hairline pt-4">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="text-sm text-zinc-600 underline-offset-2 hover:underline dark:text-zinc-400"
+        className="text-body-sm text-sky-teal underline-offset-2 hover:underline"
       >
         {open ? "Sembunyikan terkait" : "Lihat paper terkait"}
       </button>
       {open ? (
-        <div className="mt-3 rounded-xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="mt-4 rounded-card bg-subtle-cream p-5">
           {loading ? (
-            <p className="text-sm text-zinc-500">Memuat paper terkait...</p>
+            <p className="text-body-sm text-ash-gray">Memuat paper terkait...</p>
           ) : null}
-          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+          {error ? <p className="text-body-sm text-hot-pink">{error}</p> : null}
           {!loading && !error && results.length === 0 ? (
-            <p className="text-sm text-zinc-500">Belum ada paper terkait di cache.</p>
+            <p className="text-body-sm text-ash-gray">
+              Belum ada paper terkait di cache.
+            </p>
           ) : null}
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {results.map((p) => (
-              <li key={p.id} className="text-sm">
-                <span className="mr-2 rounded-full bg-zinc-200 px-2 py-0.5 text-xs dark:bg-zinc-800">
+              <li key={p.id} className="flex flex-wrap items-baseline gap-2 text-body-sm">
+                <span className="rounded-pill bg-canvas-white px-2.5 py-0.5 text-caption text-graphite">
                   {p.source}
                 </span>
                 {p.doi ? (
@@ -66,7 +68,7 @@ export function RelatedPapers({ paperId }: Props) {
                     href={`https://doi.org/${p.doi}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:underline"
+                    className="text-graphite hover:text-sky-teal hover:underline"
                   >
                     {p.title}
                   </a>
@@ -75,12 +77,12 @@ export function RelatedPapers({ paperId }: Props) {
                     href={p.pdf_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:underline"
+                    className="text-graphite hover:text-sky-teal hover:underline"
                   >
                     {p.title}
                   </a>
                 ) : (
-                  <span>{p.title}</span>
+                  <span className="text-graphite">{p.title}</span>
                 )}
               </li>
             ))}

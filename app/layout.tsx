@@ -1,21 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Caveat } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const runde = Inter({
+  variable: "--font-runde",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const caveat = Caveat({
+  variable: "--font-caveat",
   subsets: ["latin"],
+  weight: ["600"],
 });
 
 export const metadata: Metadata = {
   title: "Open Access Journal Search",
   description:
-    "Cari paper open-access dari OpenAlex, CORE, arXiv, DOAJ, dan Unpaywall.",
+    "Cari paper open-access dari OpenAlex, CORE, arXiv, DOAJ, Crossref, Europe PMC, dan Unpaywall.",
 };
 
 export default function RootLayout({
@@ -26,9 +28,9 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${runde.variable} ${caveat.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+      <body className="min-h-full flex flex-col bg-canvas-white text-ink-black">
         {children}
       </body>
     </html>

@@ -13,41 +13,44 @@ export function ResultCard({ paper }: Props) {
     : "Penulis tidak diketahui";
 
   return (
-    <article className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
-      <header className="mb-3 flex flex-wrap items-start justify-between gap-3">
-        <h2 className="text-lg font-semibold leading-snug">
+    <article className="rounded-card bg-canvas-white p-6 shadow-[var(--shadow-subtle)] transition hover:-translate-y-0.5 hover:shadow-[0_6px_18px_rgba(0,0,0,0.08)]">
+      <header className="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <h2 className="text-subheading font-semibold leading-snug text-ink-black">
           {paper.title}
         </h2>
-        <span className="shrink-0 rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+        <span className="shrink-0 rounded-pill bg-subtle-cream px-3 py-1 text-caption font-medium text-graphite">
           {paper.source}
         </span>
       </header>
 
-      <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
-        {authors}
-        {paper.year ? ` · ${paper.year}` : ""}
-        {paper.citation_count
-          ? ` · ${paper.citation_count.toLocaleString("id-ID")} sitasi`
-          : ""}
+      <p className="mb-4 text-body-sm text-deep-slate">
+        <span className="text-graphite">{authors}</span>
+        {paper.year ? <span className="text-ash-gray"> · {paper.year}</span> : null}
+        {paper.citation_count ? (
+          <span className="text-ash-gray">
+            {" "}
+            · {paper.citation_count.toLocaleString("id-ID")} sitasi
+          </span>
+        ) : null}
       </p>
 
       {paper.abstract ? (
-        <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+        <p className="mb-6 line-clamp-3 text-body-sm text-deep-slate">
           {paper.abstract}
         </p>
       ) : (
-        <p className="mb-4 text-sm italic text-zinc-400">
+        <p className="mb-6 font-caveat text-[16px] text-ash-gray">
           Abstrak tidak tersedia.
         </p>
       )}
 
-      <footer className="flex flex-wrap items-center gap-3 text-sm">
+      <footer className="flex flex-wrap items-center gap-3">
         {paper.pdf_url ? (
           <a
             href={paper.pdf_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-lg bg-zinc-900 px-3 py-1.5 text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+            className="inline-flex items-center rounded-pill bg-button-black px-[14px] py-[6px] text-body-sm font-medium text-canvas-white shadow-[var(--shadow-button)] transition hover:opacity-90"
           >
             Buka PDF
           </a>
@@ -57,17 +60,31 @@ export function ResultCard({ paper }: Props) {
             href={`https://doi.org/${paper.doi}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-zinc-600 underline-offset-2 hover:underline dark:text-zinc-400"
+            className="text-body-sm text-sky-teal underline-offset-2 hover:underline"
           >
             DOI: {paper.doi}
           </a>
         ) : null}
         {paper.is_open_access ? (
-          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+          <span className="inline-flex items-center gap-1.5 rounded-pill border border-hairline bg-canvas-white px-3 py-1 text-caption text-graphite">
+            <svg
+              aria-hidden
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-3 w-3 text-sky-teal"
+            >
+              <path d="M4 10l4 4 8-8" />
+            </svg>
             Open Access
           </span>
         ) : null}
-        <CitationMenu paper={paper} />
+        <span className="ml-auto">
+          <CitationMenu paper={paper} />
+        </span>
       </footer>
       <RelatedPapers paperId={paper.id} />
     </article>

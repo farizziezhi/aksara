@@ -29,29 +29,29 @@ export function CitationMenu({ paper }: Props) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+        className="rounded-pill border border-hairline bg-canvas-white px-[14px] py-[6px] text-body-sm text-ink-black transition hover:border-ink-black"
       >
         Kutip
       </button>
       {status === "copied" ? (
-        <span className="text-xs text-emerald-600">Tersalin</span>
+        <span className="text-caption text-sky-teal">Tersalin</span>
       ) : null}
       {status === "failed" ? (
-        <span className="text-xs text-red-600">Gagal salin</span>
+        <span className="text-caption text-hot-pink">Gagal salin</span>
       ) : null}
       {open ? (
-        <div className="absolute bottom-full left-0 z-10 mb-2 min-w-40 rounded-xl border border-zinc-200 bg-white p-2 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+        <div className="absolute bottom-full right-0 z-10 mb-2 min-w-44 rounded-card border border-hairline bg-canvas-white p-2 shadow-[var(--shadow-subtle)]">
           <button
             type="button"
             onClick={() => copy(toBibtex(paper))}
-            className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="block w-full rounded-pill px-4 py-2 text-left text-body-sm text-ink-black transition hover:bg-subtle-cream"
           >
             Copy BibTeX
           </button>
           <button
             type="button"
             onClick={() => copy(toApa(paper))}
-            className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="block w-full rounded-pill px-4 py-2 text-left text-body-sm text-ink-black transition hover:bg-subtle-cream"
           >
             Copy APA
           </button>

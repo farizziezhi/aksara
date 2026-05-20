@@ -21,19 +21,18 @@ interface Props {
 
 const ROUTE_SOURCES = SOURCE_NAMES.filter((s) => s !== "Unpaywall");
 
+const fieldLabel = "block text-caption uppercase tracking-[0.08em] text-ash-gray mb-2";
+const fieldInput =
+  "w-full rounded-pill border border-hairline bg-canvas-white px-4 py-2 text-body-sm text-ink-black outline-none transition focus:border-ink-black";
+
 export function FilterPanel({ filters, onChange }: Props) {
   return (
-    <aside className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-      <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-        Filter
-      </h3>
+    <aside className="rounded-card bg-canvas-white p-6 shadow-[var(--shadow-subtle)]">
+      <h3 className="mb-6 text-subheading font-semibold text-ink-black">Filter</h3>
 
-      <div className="mb-4 grid grid-cols-2 gap-2">
+      <div className="mb-5 grid grid-cols-2 gap-3">
         <div>
-          <label
-            htmlFor="filter-year-min"
-            className="mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300"
-          >
+          <label htmlFor="filter-year-min" className={fieldLabel}>
             Tahun dari
           </label>
           <input
@@ -51,14 +50,11 @@ export function FilterPanel({ filters, onChange }: Props) {
                 year_min: Number.isFinite(next) ? next : undefined,
               });
             }}
-            className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-950 dark:focus:border-zinc-500 dark:focus:ring-zinc-700"
+            className={fieldInput}
           />
         </div>
         <div>
-          <label
-            htmlFor="filter-year-max"
-            className="mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300"
-          >
+          <label htmlFor="filter-year-max" className={fieldLabel}>
             Tahun sampai
           </label>
           <input
@@ -76,16 +72,13 @@ export function FilterPanel({ filters, onChange }: Props) {
                 year_max: Number.isFinite(next) ? next : undefined,
               });
             }}
-            className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-950 dark:focus:border-zinc-500 dark:focus:ring-zinc-700"
+            className={fieldInput}
           />
         </div>
       </div>
 
-      <div className="mb-4">
-        <label
-          htmlFor="filter-author"
-          className="mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300"
-        >
+      <div className="mb-5">
+        <label htmlFor="filter-author" className={fieldLabel}>
           Penulis
         </label>
         <input
@@ -99,15 +92,12 @@ export function FilterPanel({ filters, onChange }: Props) {
               author: e.target.value.trim() || undefined,
             })
           }
-          className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-950 dark:focus:border-zinc-500 dark:focus:ring-zinc-700"
+          className={fieldInput}
         />
       </div>
 
-      <div className="mb-4">
-        <label
-          htmlFor="filter-source"
-          className="mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300"
-        >
+      <div className="mb-5">
+        <label htmlFor="filter-source" className={fieldLabel}>
           Sumber
         </label>
         <select
@@ -117,7 +107,7 @@ export function FilterPanel({ filters, onChange }: Props) {
             const v = e.target.value;
             onChange({ ...filters, source: v ? (v as SourceName) : undefined });
           }}
-          className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-950 dark:focus:border-zinc-500 dark:focus:ring-zinc-700"
+          className={fieldInput}
         >
           <option value="">Semua sumber</option>
           {ROUTE_SOURCES.map((s) => (
@@ -128,11 +118,8 @@ export function FilterPanel({ filters, onChange }: Props) {
         </select>
       </div>
 
-      <div className="mb-4">
-        <label
-          htmlFor="filter-sort"
-          className="mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300"
-        >
+      <div className="mb-6">
+        <label htmlFor="filter-sort" className={fieldLabel}>
           Urutkan
         </label>
         <select
@@ -141,7 +128,7 @@ export function FilterPanel({ filters, onChange }: Props) {
           onChange={(e) =>
             onChange({ ...filters, sort: e.target.value as SearchSort })
           }
-          className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-950 dark:focus:border-zinc-500 dark:focus:ring-zinc-700"
+          className={fieldInput}
         >
           <option value="relevance">Relevansi</option>
           <option value="citations_desc">Sitasi terbanyak</option>
@@ -150,13 +137,27 @@ export function FilterPanel({ filters, onChange }: Props) {
         </select>
       </div>
 
-      <label className="flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          checked={filters.oa_only}
-          onChange={(e) => onChange({ ...filters, oa_only: e.target.checked })}
-          className="h-4 w-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-500 dark:border-zinc-600"
-        />
+      <label className="flex cursor-pointer items-center gap-3 text-body-sm text-graphite">
+        <span className="relative inline-flex h-5 w-5 items-center justify-center">
+          <input
+            type="checkbox"
+            checked={filters.oa_only}
+            onChange={(e) => onChange({ ...filters, oa_only: e.target.checked })}
+            className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-hairline bg-canvas-white transition checked:border-sky-teal checked:bg-sky-teal"
+          />
+          <svg
+            aria-hidden
+            viewBox="0 0 20 20"
+            className="pointer-events-none absolute h-3 w-3 text-canvas-white opacity-0 peer-checked:opacity-100"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M4 10l4 4 8-8" />
+          </svg>
+        </span>
         Hanya open access
       </label>
     </aside>

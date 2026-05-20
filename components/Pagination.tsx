@@ -17,29 +17,29 @@ export function Pagination({ page, limit, total, onChange }: Props) {
   return (
     <nav
       aria-label="Pagination"
-      className="mt-6 flex flex-wrap items-center justify-between gap-3 text-sm"
+      className="mt-10 flex flex-wrap items-center justify-between gap-4"
     >
-      <p className="text-zinc-500 dark:text-zinc-400">
+      <p className="text-caption text-ash-gray">
         Menampilkan {start.toLocaleString("id-ID")}–{end.toLocaleString("id-ID")} dari{" "}
         {total.toLocaleString("id-ID")}
       </p>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <button
           type="button"
           disabled={page <= 1}
           onClick={() => onChange(page - 1)}
-          className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+          className="rounded-pill border border-hairline bg-canvas-white px-4 py-2 text-body-sm text-ink-black transition hover:border-ink-black disabled:cursor-not-allowed disabled:border-hairline disabled:text-ash-gray"
         >
           Sebelumnya
         </button>
-        <span className="text-zinc-600 dark:text-zinc-400">
+        <span className="text-body-sm text-deep-slate">
           Halaman {page} / {totalPages}
         </span>
         <button
           type="button"
           disabled={page >= totalPages}
           onClick={() => onChange(page + 1)}
-          className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+          className="rounded-pill bg-button-black px-4 py-2 text-body-sm text-canvas-white shadow-[var(--shadow-button)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Berikutnya
         </button>
