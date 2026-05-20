@@ -4,7 +4,8 @@ import { searchCORE } from "./sources/core";
 import { searchArXiv } from "./sources/arxiv";
 import { searchDOAJ } from "./sources/doaj";
 import { searchCrossref } from "./sources/crossref";
-import { searchSemanticScholar } from "./sources/semantic-scholar";
+import { searchEuropePMC } from "./sources/europepmc";
+import { enrichCitationCounts } from "./sources/opencitations";
 import { deduplicate } from "./deduplicator";
 import { rank } from "./ranker";
 
@@ -29,7 +30,7 @@ const REGISTRY: Record<Exclude<SourceName, "Unpaywall">, SourceFn> = {
   arXiv: searchArXiv,
   DOAJ: searchDOAJ,
   Crossref: searchCrossref,
-  SemanticScholar: searchSemanticScholar,
+  EuropePMC: searchEuropePMC,
 };
 
 const DEFAULT_SOURCES: SourceName[] = [
@@ -38,7 +39,7 @@ const DEFAULT_SOURCES: SourceName[] = [
   "arXiv",
   "DOAJ",
   "Crossref",
-  "SemanticScholar",
+  "EuropePMC",
 ];
 
 export async function aggregate(opts: AggregateOptions): Promise<AggregateResult> {
@@ -71,6 +72,7 @@ export async function aggregate(opts: AggregateOptions): Promise<AggregateResult
   });
 
   const merged = deduplicate(all);
+  await enrichCitationCounts(merged, { budgetMs: 2500, concurrency: 6 });
   const ordered = rank(merged, { query: opts.query });
 
   return { results: ordered, sources_queried: queried, sources_failed: failed, errors };

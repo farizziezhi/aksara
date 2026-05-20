@@ -3,13 +3,14 @@ import { searchCORE } from "../lib/sources/core";
 import { searchArXiv } from "../lib/sources/arxiv";
 import { searchDOAJ } from "../lib/sources/doaj";
 import { searchCrossref } from "../lib/sources/crossref";
-import { searchSemanticScholar } from "../lib/sources/semantic-scholar";
+import { searchEuropePMC } from "../lib/sources/europepmc";
+import { getCitationCount } from "../lib/sources/opencitations";
 import { getOpenAccessLink } from "../lib/sources/unpaywall";
 import type { PaperResult, SourceName } from "../types/paper";
 
 type RunFn = () => Promise<PaperResult[] | string | null>;
 
-async function run(name: SourceName | "Unpaywall", fn: RunFn) {
+async function run(name: SourceName | "Unpaywall" | "OpenCitations", fn: RunFn) {
   process.stdout.write(`\n=== ${name} ===\n`);
   const t0 = Date.now();
   try {
@@ -42,7 +43,11 @@ async function main() {
   await run("arXiv", () => searchArXiv(query, 3));
   await run("DOAJ", () => searchDOAJ(query, 3));
   await run("Crossref", () => searchCrossref(query, 3));
-  await run("SemanticScholar", () => searchSemanticScholar(query, 3));
+  await run("EuropePMC", () => searchEuropePMC(query, 3));
+  await run("OpenCitations", async () => {
+    const c = await getCitationCount(sampleDoi);
+    return c === null ? "(no count)" : `count=${c}`;
+  });
   await run("Unpaywall", async () => (await getOpenAccessLink(sampleDoi)) ?? "(no OA link)");
 }
 
