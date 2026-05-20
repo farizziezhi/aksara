@@ -19,7 +19,7 @@ const PAGE_SIZE = 10;
 export default function Home() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState<Filters>({ oa_only: true });
+  const [filters, setFilters] = useState<Filters>({ oa_only: true, sort: "relevance" });
   const [status, setStatus] = useState<Status>("idle");
   const [data, setData] = useState<SearchSuccessResponse | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -31,9 +31,12 @@ export default function Home() {
         page: String(p),
         limit: String(PAGE_SIZE),
       });
-      if (f.year !== undefined) params.set("year", String(f.year));
+      if (f.year_min !== undefined) params.set("year_min", String(f.year_min));
+      if (f.year_max !== undefined) params.set("year_max", String(f.year_max));
+      if (f.author) params.set("author", f.author);
       if (f.source) params.set("source", f.source.toLowerCase());
       params.set("oa_only", String(f.oa_only));
+      params.set("sort", f.sort);
 
       setStatus("loading");
       setErrorMessage("");
