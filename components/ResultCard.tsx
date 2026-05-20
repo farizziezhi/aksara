@@ -1,5 +1,6 @@
 import type { PaperResult } from "../types/paper";
 import { CitationMenu } from "./CitationMenu";
+import { RelatedPapers } from "./RelatedPapers";
 
 interface Props {
   paper: PaperResult;
@@ -68,6 +69,7 @@ export function ResultCard({ paper }: Props) {
         ) : null}
         <CitationMenu paper={paper} />
       </footer>
+      <RelatedPapers paperId={paper.id} />
     </article>
   );
 }
