@@ -17,31 +17,35 @@ export function Pagination({ page, limit, total, onChange }: Props) {
   return (
     <nav
       aria-label="Pagination"
-      className="mt-10 flex flex-wrap items-center justify-between gap-4"
+      className="mt-8 flex flex-col items-stretch gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4"
     >
-      <p className="text-caption text-ash-gray">
-        Menampilkan {start.toLocaleString("id-ID")}–{end.toLocaleString("id-ID")} dari{" "}
+      <p className="text-center text-caption text-ash-gray sm:text-left">
+        {start.toLocaleString("id-ID")}–{end.toLocaleString("id-ID")} dari{" "}
         {total.toLocaleString("id-ID")}
       </p>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-2 sm:justify-end sm:gap-3">
         <button
           type="button"
           disabled={page <= 1}
           onClick={() => onChange(page - 1)}
-          className="rounded-pill border border-hairline bg-canvas-white px-4 py-2 text-body-sm text-ink-black transition hover:border-ink-black disabled:cursor-not-allowed disabled:border-hairline disabled:text-ash-gray"
+          aria-label="Halaman sebelumnya"
+          className="inline-flex items-center gap-1 rounded-pill border border-hairline bg-canvas-white px-3 py-2 text-[13px] text-ink-black transition hover:border-ink-black disabled:cursor-not-allowed disabled:border-hairline disabled:text-ash-gray sm:px-4 sm:text-body-sm"
         >
-          Sebelumnya
+          <span aria-hidden>←</span>
+          <span className="hidden xs:inline sm:inline">Sebelumnya</span>
         </button>
-        <span className="text-body-sm text-deep-slate">
-          Halaman {page} / {totalPages}
+        <span className="text-[12px] text-deep-slate sm:text-body-sm">
+          {page} / {totalPages}
         </span>
         <button
           type="button"
           disabled={page >= totalPages}
           onClick={() => onChange(page + 1)}
-          className="rounded-pill bg-button-black px-4 py-2 text-body-sm text-canvas-white shadow-[var(--shadow-button)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+          aria-label="Halaman berikutnya"
+          className="inline-flex items-center gap-1 rounded-pill bg-button-black px-3 py-2 text-[13px] text-canvas-white shadow-[var(--shadow-button)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 sm:px-4 sm:text-body-sm"
         >
-          Berikutnya
+          <span className="hidden xs:inline sm:inline">Berikutnya</span>
+          <span aria-hidden>→</span>
         </button>
       </div>
     </nav>

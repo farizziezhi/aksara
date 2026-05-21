@@ -38,29 +38,35 @@ export function RelatedPapers({ paperId }: Props) {
   }, [open, paperId, results.length]);
 
   return (
-    <div className="mt-5 border-t border-hairline pt-4">
+    <div className="mt-4 border-t border-hairline pt-4 sm:mt-5">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="text-body-sm text-sky-teal underline-offset-2 hover:underline"
+        aria-expanded={open}
+        className="inline-flex items-center gap-1.5 text-[13px] text-sky-teal underline-offset-2 hover:underline sm:text-body-sm"
       >
         {open ? "Sembunyikan terkait" : "Lihat paper terkait"}
+        <span aria-hidden className={open ? "rotate-180 transition" : "transition"}>
+          <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M5 8l5 5 5-5" />
+          </svg>
+        </span>
       </button>
       {open ? (
-        <div className="mt-4 rounded-card bg-subtle-cream p-5">
+        <div className="mt-3 rounded-card bg-subtle-cream p-4 sm:mt-4 sm:p-5">
           {loading ? (
-            <p className="text-body-sm text-ash-gray">Memuat paper terkait...</p>
+            <p className="text-[13px] text-ash-gray sm:text-body-sm">Memuat paper terkait...</p>
           ) : null}
-          {error ? <p className="text-body-sm text-hot-pink">{error}</p> : null}
+          {error ? <p className="text-[13px] text-hot-pink sm:text-body-sm">{error}</p> : null}
           {!loading && !error && results.length === 0 ? (
-            <p className="text-body-sm text-ash-gray">
+            <p className="text-[13px] text-ash-gray sm:text-body-sm">
               Belum ada paper terkait di cache.
             </p>
           ) : null}
           <ul className="space-y-3">
             {results.map((p) => (
-              <li key={p.id} className="flex flex-wrap items-baseline gap-2 text-body-sm">
-                <span className="rounded-pill bg-canvas-white px-2.5 py-0.5 text-caption text-graphite">
+              <li key={p.id} className="flex flex-col gap-1.5 text-[13px] sm:flex-row sm:flex-wrap sm:items-baseline sm:gap-2 sm:text-body-sm">
+                <span className="self-start rounded-pill bg-canvas-white px-2 py-0.5 text-[11px] text-graphite sm:px-2.5 sm:text-caption">
                   {p.source}
                 </span>
                 {p.doi ? (
@@ -68,7 +74,7 @@ export function RelatedPapers({ paperId }: Props) {
                     href={`https://doi.org/${p.doi}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-graphite hover:text-sky-teal hover:underline"
+                    className="break-words text-graphite hover:text-sky-teal hover:underline"
                   >
                     {p.title}
                   </a>
@@ -77,12 +83,12 @@ export function RelatedPapers({ paperId }: Props) {
                     href={p.pdf_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-graphite hover:text-sky-teal hover:underline"
+                    className="break-words text-graphite hover:text-sky-teal hover:underline"
                   >
                     {p.title}
                   </a>
                 ) : (
-                  <span className="text-graphite">{p.title}</span>
+                  <span className="break-words text-graphite">{p.title}</span>
                 )}
               </li>
             ))}

@@ -26,7 +26,7 @@ export function SearchBar({ initialQuery = "", onChange, debounceMs = 400, input
       <div className="relative">
         <span
           aria-hidden
-          className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-ash-gray sm:left-6"
+          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ash-gray sm:left-6"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="7" />
@@ -40,8 +40,8 @@ export function SearchBar({ initialQuery = "", onChange, debounceMs = 400, input
           spellCheck={false}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="Cari paper (judul, kata kunci, DOI, penulis)..."
-          className="w-full rounded-pill border border-hairline bg-canvas-white py-3.5 pl-12 pr-20 text-body text-ink-black outline-none transition focus:border-ink-black sm:py-4 sm:pl-14 sm:pr-24"
+          placeholder="Cari paper (judul, kata kunci, DOI)..."
+          className="w-full rounded-pill border border-hairline bg-canvas-white py-3 pl-11 pr-4 text-[15px] text-ink-black outline-none transition placeholder:text-ash-gray focus:border-ink-black sm:py-4 sm:pl-14 sm:pr-24 sm:text-body"
           aria-label="Search query"
         />
         <span
@@ -56,8 +56,8 @@ export function SearchBar({ initialQuery = "", onChange, debounceMs = 400, input
           </kbd>
         </span>
       </div>
-      <p className="mt-3 px-2 text-caption text-ash-gray">
-        Minimal 3 karakter. Hasil otomatis muncul ketika kamu berhenti mengetik.
+      <p className="mt-2 px-2 text-[11px] text-ash-gray sm:mt-3 sm:text-caption">
+        Minimal 3 karakter. Hasil otomatis muncul saat berhenti mengetik.
       </p>
     </div>
   );

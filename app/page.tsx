@@ -123,21 +123,24 @@ export default function Home() {
       <SiteHeader />
 
       <section className="border-b border-hairline bg-canvas-white">
-        <div className="mx-auto w-full max-w-[1200px] px-4 py-14 text-center sm:px-6 sm:py-20">
-          <p className="font-caveat text-[20px] text-sky-teal sm:text-[24px]">
+        <div className="mx-auto w-full max-w-[1200px] px-4 py-12 text-center sm:px-6 sm:py-20">
+          <p className="font-caveat text-[18px] text-sky-teal sm:text-[24px]">
             ribuan paper, satu pencarian
           </p>
-          <h1 className="mx-auto mt-4 max-w-3xl text-[34px] font-semibold leading-[1.1] tracking-tight text-ink-black sm:text-heading-lg md:text-display">
+          <h1 className="mx-auto mt-3 max-w-3xl text-[28px] font-semibold leading-[1.1] tracking-tight text-ink-black sm:mt-4 sm:text-heading-lg md:text-display">
             Cari paper open-access seperti seorang peneliti.
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-body-sm text-deep-slate sm:text-body">
+          <p className="mx-auto mt-4 max-w-xl text-[14px] text-deep-slate sm:mt-6 sm:text-body">
             Penelusuran terpadu lintas OpenAlex, CORE, arXiv, DOAJ, Crossref, dan Europe PMC.
             Bersih, ringan, tanpa biaya.
           </p>
 
-          <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:mt-8 sm:gap-x-6 sm:gap-y-3">
             {FEATURES.map((f) => (
-              <li key={f} className="inline-flex items-center gap-2 text-body-sm text-graphite">
+              <li
+                key={f}
+                className="inline-flex items-center gap-2 text-[12px] text-graphite sm:text-body-sm"
+              >
                 <svg
                   aria-hidden
                   viewBox="0 0 20 20"
@@ -146,7 +149,7 @@ export default function Home() {
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="h-4 w-4 text-sky-teal"
+                  className="h-3.5 w-3.5 text-sky-teal sm:h-4 sm:w-4"
                 >
                   <path d="M4 10l4 4 8-8" />
                 </svg>
@@ -157,12 +160,12 @@ export default function Home() {
         </div>
       </section>
 
-      <main id="cari" className="mx-auto w-full max-w-[1200px] flex-1 px-4 py-12 sm:px-6 sm:py-16">
+      <main id="cari" className="mx-auto w-full max-w-[1200px] flex-1 px-4 py-8 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-2xl">
           <SearchBar onChange={onQueryChange} inputRef={searchRef} />
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-[280px_1fr] md:gap-10">
+        <div className="mt-8 grid grid-cols-1 gap-5 sm:mt-12 md:grid-cols-[280px_1fr] md:gap-10">
           <div className="md:order-1">
             <FilterPanel filters={filters} onChange={onFiltersChange} />
           </div>
@@ -191,26 +194,26 @@ export default function Home() {
               />
             ) : data ? (
               <>
-                <div className="mb-6 flex flex-wrap items-baseline gap-3">
-                  <p className="text-subheading font-semibold text-ink-black">
+                <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 sm:mb-6">
+                  <p className="text-[18px] font-semibold text-ink-black sm:text-subheading">
                     {data.total.toLocaleString("id-ID")}
-                    <span className="ml-2 text-body-sm font-normal text-ash-gray">
+                    <span className="ml-2 text-[12px] font-normal text-ash-gray sm:text-body-sm">
                       hasil
-                      {data.from_cache ? " · dari cache" : ""}
+                      {data.from_cache ? " · cache" : ""}
                     </span>
                   </p>
                   {data.sources_failed.length > 0 ? (
-                    <p className="text-caption text-ash-gray">
-                      sumber gagal: {data.sources_failed.join(", ")}
+                    <p className="text-[11px] text-ash-gray sm:text-caption">
+                      gagal: {data.sources_failed.join(", ")}
                     </p>
                   ) : null}
                 </div>
                 {data.warning ? (
-                  <p className="mb-6 rounded-card border border-hairline bg-subtle-cream px-5 py-3 text-body-sm text-graphite">
+                  <p className="mb-5 rounded-card border border-hairline bg-subtle-cream px-4 py-2.5 text-[13px] text-graphite sm:mb-6 sm:px-5 sm:py-3 sm:text-body-sm">
                     {data.warning}
                   </p>
                 ) : null}
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-4 sm:gap-5">
                   {data.results.map((p) => (
                     <ResultCard key={p.id} paper={p} />
                   ))}

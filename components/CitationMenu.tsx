@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { PaperResult } from "../types/paper";
 import { toApa, toBibtex } from "../lib/citation";
 
@@ -11,6 +11,25 @@ interface Props {
 export function CitationMenu({ paper }: Props) {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onClick(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
 
   async function copy(text: string) {
     try {
@@ -25,11 +44,12 @@ export function CitationMenu({ paper }: Props) {
   }
 
   return (
-    <div className="relative inline-flex items-center gap-2">
+    <div ref={wrapRef} className="relative inline-flex items-center gap-2">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="rounded-pill border border-hairline bg-canvas-white px-[14px] py-[6px] text-body-sm text-ink-black transition hover:border-ink-black"
+        aria-expanded={open}
+        className="rounded-pill border border-hairline bg-canvas-white px-3 py-1.5 text-[13px] text-ink-black transition hover:border-ink-black sm:px-[14px] sm:text-body-sm"
       >
         Kutip
       </button>
@@ -40,9 +60,13 @@ export function CitationMenu({ paper }: Props) {
         <span className="text-caption text-hot-pink">Gagal salin</span>
       ) : null}
       {open ? (
-        <div className="absolute bottom-full right-0 z-10 mb-2 min-w-44 rounded-card border border-hairline bg-canvas-white p-2 shadow-[var(--shadow-subtle)]">
+        <div
+          role="menu"
+          className="absolute bottom-full right-0 z-20 mb-2 w-44 rounded-card border border-hairline bg-canvas-white p-2 shadow-[var(--shadow-subtle)]"
+        >
           <button
             type="button"
+            role="menuitem"
             onClick={() => copy(toBibtex(paper))}
             className="block w-full rounded-pill px-4 py-2 text-left text-body-sm text-ink-black transition hover:bg-subtle-cream"
           >
@@ -50,6 +74,7 @@ export function CitationMenu({ paper }: Props) {
           </button>
           <button
             type="button"
+            role="menuitem"
             onClick={() => copy(toApa(paper))}
             className="block w-full rounded-pill px-4 py-2 text-left text-body-sm text-ink-black transition hover:bg-subtle-cream"
           >
