@@ -9,11 +9,14 @@ import { searchPubMed } from "./sources/pubmed";
 import { enrichCitationCounts } from "./sources/opencitations";
 import { deduplicate } from "./deduplicator";
 import { rank } from "./ranker";
+import { TOPICS, topicMatches, type Topic } from "./topics";
 
 export interface AggregateOptions {
   query: string;
   perSourceLimit?: number;
   sources?: SourceName[];
+  topic?: Topic;
+  countryCode?: string | null;
 }
 
 export interface AggregateResult {
@@ -24,16 +27,6 @@ export interface AggregateResult {
 }
 
 type SourceFn = (q: string, limit: number) => Promise<PaperResult[]>;
-
-const REGISTRY: Record<Exclude<SourceName, "Unpaywall">, SourceFn> = {
-  OpenAlex: searchOpenAlex,
-  CORE: searchCORE,
-  arXiv: searchArXiv,
-  DOAJ: searchDOAJ,
-  Crossref: searchCrossref,
-  EuropePMC: searchEuropePMC,
-  PubMed: searchPubMed,
-};
 
 const DEFAULT_SOURCES: SourceName[] = [
   "OpenAlex",
@@ -47,12 +40,26 @@ const DEFAULT_SOURCES: SourceName[] = [
 
 export async function aggregate(opts: AggregateOptions): Promise<AggregateResult> {
   const limit = opts.perSourceLimit ?? 25;
+  const topic: Topic = opts.topic ?? "all";
+  const conceptId = TOPICS[topic]?.openalexConcept ?? null;
+  const country = opts.countryCode ?? null;
+
+  const registry: Record<Exclude<SourceName, "Unpaywall">, SourceFn> = {
+    OpenAlex: (q, l) => searchOpenAlex(q, l, { conceptId, countryCode: country }),
+    CORE: searchCORE,
+    arXiv: searchArXiv,
+    DOAJ: (q, l) => searchDOAJ(q, l, { countryCode: country }),
+    Crossref: searchCrossref,
+    EuropePMC: searchEuropePMC,
+    PubMed: searchPubMed,
+  };
+
   const requested = (opts.sources ?? DEFAULT_SOURCES).filter(
-    (s): s is keyof typeof REGISTRY => s in REGISTRY,
+    (s): s is keyof typeof registry => s in registry,
   );
 
   const settled = await Promise.allSettled(
-    requested.map((s) => REGISTRY[s](opts.query, limit)),
+    requested.map((s) => registry[s](opts.query, limit)),
   );
 
   const all: PaperResult[] = [];
@@ -74,7 +81,14 @@ export async function aggregate(opts: AggregateOptions): Promise<AggregateResult
     }
   });
 
-  const merged = deduplicate(all);
+  const filtered =
+    topic === "all"
+      ? all
+      : all.filter((p) =>
+          topicMatches(topic, `${p.title} ${p.abstract ?? ""}`),
+        );
+
+  const merged = deduplicate(filtered);
   await enrichCitationCounts(merged, { budgetMs: 2500, concurrency: 6 });
   const ordered = rank(merged, { query: opts.query });
 

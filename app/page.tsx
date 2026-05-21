@@ -28,7 +28,11 @@ const FEATURES = [
 export default function Home() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState<Filters>({ oa_only: true, sort: "relevance" });
+  const [filters, setFilters] = useState<Filters>({
+    oa_only: true,
+    sort: "relevance",
+    topic: "all",
+  });
   const [status, setStatus] = useState<Status>("idle");
   const [data, setData] = useState<SearchSuccessResponse | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -45,8 +49,10 @@ export default function Home() {
       if (f.year_max !== undefined) params.set("year_max", String(f.year_max));
       if (f.author) params.set("author", f.author);
       if (f.source) params.set("source", f.source.toLowerCase());
+      if (f.country) params.set("country", f.country);
       params.set("oa_only", String(f.oa_only));
       params.set("sort", f.sort);
+      params.set("topic", f.topic);
 
       setStatus("loading");
       setErrorMessage("");

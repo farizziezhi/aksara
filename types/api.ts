@@ -13,6 +13,8 @@ export interface SearchRequestQuery {
   oa_only?: boolean;
   author?: string;
   sort?: SearchSort;
+  topic?: string;
+  country?: string;
 }
 
 export interface SearchSuccessResponse {

@@ -34,15 +34,28 @@ interface OpenAlexResponse {
 const ENDPOINT = "https://api.openalex.org/works";
 const SOURCE = "OpenAlex" as const;
 
+export interface OpenAlexOptions {
+  conceptId?: string | null;
+  countryCode?: string | null;
+}
+
 export async function searchOpenAlex(
   query: string,
   limit = 25,
+  options: OpenAlexOptions = {},
 ): Promise<PaperResult[]> {
   const url = new URL(ENDPOINT);
   url.searchParams.set("search", query);
   url.searchParams.set("per-page", String(Math.min(Math.max(limit, 1), 25)));
   const email = process.env.UNPAYWALL_EMAIL;
   if (email) url.searchParams.set("mailto", email);
+
+  const filters: string[] = [];
+  if (options.conceptId) filters.push(`concepts.id:${options.conceptId}`);
+  if (options.countryCode) {
+    filters.push(`institutions.country_code:${options.countryCode.toLowerCase()}`);
+  }
+  if (filters.length) url.searchParams.set("filter", filters.join(","));
 
   const data = await fetchJson<OpenAlexResponse>(url.toString(), {
     source: SOURCE,
@@ -51,6 +64,22 @@ export async function searchOpenAlex(
 
   const works = data.results ?? [];
   return works
+    .map((w) => normalizeWork(w))
+    .filter((p): p is PaperResult => p !== null);
+}
+
+export async function fetchOpenAlexById(arxivId: string): Promise<PaperResult[]> {
+  const url = new URL(ENDPOINT);
+  url.searchParams.set("filter", `ids.openalex:!null,fulltext.search:${arxivId}`);
+  url.searchParams.set("per-page", "5");
+  const email = process.env.UNPAYWALL_EMAIL;
+  if (email) url.searchParams.set("mailto", email);
+
+  const data = await fetchJson<OpenAlexResponse>(url.toString(), {
+    source: SOURCE,
+    headers: { Accept: "application/json" },
+  });
+  return (data.results ?? [])
     .map((w) => normalizeWork(w))
     .filter((p): p is PaperResult => p !== null);
 }

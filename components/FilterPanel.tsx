@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { SourceName } from "../types/paper";
 import { SOURCE_NAMES } from "../types/paper";
+import { TOPIC_VALUES, TOPICS, type Topic } from "../lib/topics";
 
 export type SearchSort = "relevance" | "citations_desc" | "year_desc" | "year_asc";
 
@@ -13,6 +14,8 @@ export interface Filters {
   oa_only: boolean;
   author?: string;
   sort: SearchSort;
+  topic: Topic;
+  country?: string;
 }
 
 interface Props {
@@ -34,6 +37,8 @@ function activeCount(f: Filters): number {
   if (f.source) n++;
   if (f.sort !== "relevance") n++;
   if (!f.oa_only) n++;
+  if (f.topic !== "all") n++;
+  if (f.country) n++;
   return n;
 }
 
@@ -75,6 +80,55 @@ export function FilterPanel({ filters, onChange }: Props) {
       </button>
 
       <div className={`${open ? "mt-5 grid" : "hidden"} md:mt-6 md:grid`}>
+        <div className="mb-4">
+          <label htmlFor="filter-topic" className={fieldLabel}>
+            Topik
+          </label>
+          <select
+            id="filter-topic"
+            value={filters.topic}
+            onChange={(e) =>
+              onChange({ ...filters, topic: e.target.value as Topic })
+            }
+            className={fieldInput}
+          >
+            {TOPIC_VALUES.map((t) => (
+              <option key={t} value={t}>
+                {TOPICS[t].label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="filter-country" className={fieldLabel}>
+            Negara peneliti
+          </label>
+          <select
+            id="filter-country"
+            value={filters.country ?? ""}
+            onChange={(e) => {
+              const v = e.target.value;
+              onChange({ ...filters, country: v || undefined });
+            }}
+            className={fieldInput}
+          >
+            <option value="">Semua negara</option>
+            <option value="ID">Indonesia</option>
+            <option value="MY">Malaysia</option>
+            <option value="SG">Singapura</option>
+            <option value="US">Amerika Serikat</option>
+            <option value="GB">Inggris</option>
+            <option value="JP">Jepang</option>
+            <option value="CN">China</option>
+            <option value="IN">India</option>
+            <option value="DE">Jerman</option>
+            <option value="FR">Prancis</option>
+            <option value="AU">Australia</option>
+            <option value="CA">Kanada</option>
+          </select>
+        </div>
+
         <div className="mb-4 grid grid-cols-2 gap-3">
           <div>
             <label htmlFor="filter-year-min" className={fieldLabel}>

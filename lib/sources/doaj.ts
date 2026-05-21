@@ -40,12 +40,21 @@ interface DoajResponse {
 
 const SOURCE = "DOAJ" as const;
 
+export interface DoajOptions {
+  countryCode?: string | null;
+}
+
 export async function searchDOAJ(
   query: string,
   limit = 25,
+  options: DoajOptions = {},
 ): Promise<PaperResult[]> {
   const pageSize = Math.min(Math.max(limit, 1), 25);
-  const url = `https://doaj.org/api/search/articles/${encodeURIComponent(query)}?pageSize=${pageSize}`;
+  let q = query;
+  if (options.countryCode) {
+    q = `${query} AND bibjson.journal.country.exact:${options.countryCode.toUpperCase()}`;
+  }
+  const url = `https://doaj.org/api/search/articles/${encodeURIComponent(q)}?pageSize=${pageSize}`;
   const data = await fetchJson<DoajResponse>(url, {
     source: SOURCE,
     headers: { Accept: "application/json" },

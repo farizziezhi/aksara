@@ -9,10 +9,29 @@ import {
 const ENDPOINT = "http://export.arxiv.org/api/query";
 const SOURCE = "arXiv" as const;
 
+export const ARXIV_ID_RE = /\b(\d{4}\.\d{4,5}(?:v\d+)?|[a-z\-]+(?:\.[A-Z]{2})?\/\d{7})\b/i;
+
+export function detectArxivId(query: string): string | null {
+  const cleaned = query.trim().replace(/^arxiv:/i, "");
+  const m = cleaned.match(ARXIV_ID_RE);
+  return m ? m[0].replace(/v\d+$/i, "") : null;
+}
+
+export async function fetchArxivById(arxivId: string): Promise<PaperResult[]> {
+  const url = new URL(ENDPOINT);
+  url.searchParams.set("id_list", arxivId);
+  url.searchParams.set("max_results", "1");
+  const xml = await fetchText(url.toString(), { source: SOURCE });
+  return parseAtomFeed(xml);
+}
+
 export async function searchArXiv(
   query: string,
   limit = 25,
 ): Promise<PaperResult[]> {
+  const id = detectArxivId(query);
+  if (id) return fetchArxivById(id);
+
   const url = new URL(ENDPOINT);
   url.searchParams.set("search_query", `all:${query}`);
   url.searchParams.set("start", "0");
