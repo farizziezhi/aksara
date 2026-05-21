@@ -140,17 +140,11 @@ async function handle(req: NextRequest) {
   stage = "cache-read";
   const hash = hashQuery(q);
 
-  const dbUrl = process.env.DATABASE_URL ?? "";
-  const dbToken = process.env.DATABASE_AUTH_TOKEN ?? "";
-  const dbDiag = `url_len=${dbUrl.length} url_scheme=${dbUrl.split(":")[0]} token_len=${dbToken.length} token_first=${dbToken.slice(0, 8)}`;
-
   let papers: PaperResult[] | null;
   try {
     papers = await getCachedResult(hash);
   } catch (err) {
-    const e = err instanceof Error ? err : new Error(String(err));
-    e.message = `cache-read: ${e.message} | ${dbDiag}`;
-    throw e;
+    throw tag(err);
   }
   let fromCache = papers !== null;
   let sourcesQueried: SourceName[] = [];
