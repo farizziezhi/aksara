@@ -17,7 +17,6 @@ import type {
 } from "../../../types/api";
 import type { PaperResult, SourceName } from "../../../types/paper";
 import { SOURCE_NAMES } from "../../../types/paper";
-import { TOPIC_VALUES, type Topic } from "../../../lib/topics";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +49,6 @@ const querySchema = z
       .optional()
       .transform((v) => (v ? v : undefined)),
     sort: z.enum(sortValues).default("relevance"),
-    topic: z.enum(TOPIC_VALUES).default("all"),
     country: z
       .string()
       .trim()
@@ -117,7 +115,6 @@ async function handle(req: NextRequest) {
     oa_only: url.searchParams.get("oa_only") ?? undefined,
     author: url.searchParams.get("author") ?? undefined,
     sort: url.searchParams.get("sort") ?? undefined,
-    topic: url.searchParams.get("topic") ?? undefined,
     country: url.searchParams.get("country") ?? undefined,
   });
 
@@ -132,7 +129,7 @@ async function handle(req: NextRequest) {
     );
   }
 
-  const { q, page, limit, year, year_min, year_max, source, oa_only, author, sort, topic, country } = parsed.data;
+  const { q, page, limit, year, year_min, year_max, source, oa_only, author, sort, country } = parsed.data;
 
   let sourceFilter: SourceName | undefined;
   if (source) {
@@ -148,7 +145,7 @@ async function handle(req: NextRequest) {
   }
 
   stage = "cache-read";
-  const hash = hashQuery(`${q}|topic=${topic}|country=${country ?? ""}`);
+  const hash = hashQuery(`${q}|country=${country ?? ""}`);
 
   let papers: PaperResult[] | null;
   try {
@@ -166,7 +163,6 @@ async function handle(req: NextRequest) {
     try {
       out = await aggregate({
         query: q,
-        topic: topic as Topic,
         countryCode: country ?? null,
       });
     } catch (err) {

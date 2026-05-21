@@ -31,7 +31,6 @@ export default function Home() {
   const [filters, setFilters] = useState<Filters>({
     oa_only: true,
     sort: "relevance",
-    topic: "all",
   });
   const [status, setStatus] = useState<Status>("idle");
   const [data, setData] = useState<SearchSuccessResponse | null>(null);
@@ -52,7 +51,6 @@ export default function Home() {
       if (f.country) params.set("country", f.country);
       params.set("oa_only", String(f.oa_only));
       params.set("sort", f.sort);
-      params.set("topic", f.topic);
 
       setStatus("loading");
       setErrorMessage("");

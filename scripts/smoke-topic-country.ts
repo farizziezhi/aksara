@@ -7,10 +7,9 @@ async function main() {
   console.log(`results=${r1.length}`);
   if (r1[0]) console.log(`title: ${r1[0].title.slice(0, 100)}`);
 
-  console.log("\n=== aggregate topic=medicine country=ID ===");
+  console.log("\n=== aggregate country=ID ===");
   const r2 = await aggregate({
     query: "rice diabetes",
-    topic: "medicine",
     countryCode: "ID",
   });
   console.log(`queried=${r2.sources_queried.join(",")}`);
@@ -21,10 +20,9 @@ async function main() {
     console.log(`  [${p.source}] ${p.title.slice(0, 80)} (year=${p.year})`);
   }
 
-  console.log("\n=== aggregate topic=engineering country=ID ===");
+  console.log("\n=== aggregate another country=ID query ===");
   const r3 = await aggregate({
     query: "renewable energy",
-    topic: "engineering",
     countryCode: "ID",
   });
   console.log(`queried=${r3.sources_queried.join(",")}`);

@@ -35,7 +35,6 @@ const ENDPOINT = "https://api.openalex.org/works";
 const SOURCE = "OpenAlex" as const;
 
 export interface OpenAlexOptions {
-  conceptId?: string | null;
   countryCode?: string | null;
 }
 
@@ -51,7 +50,6 @@ export async function searchOpenAlex(
   if (email) url.searchParams.set("mailto", email);
 
   const filters: string[] = [];
-  if (options.conceptId) filters.push(`concepts.id:${options.conceptId}`);
   if (options.countryCode) {
     filters.push(`institutions.country_code:${options.countryCode.toLowerCase()}`);
   }

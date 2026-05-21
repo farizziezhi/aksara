@@ -9,13 +9,11 @@ import { searchPubMed } from "./sources/pubmed";
 import { enrichCitationCounts } from "./sources/opencitations";
 import { deduplicate } from "./deduplicator";
 import { rank } from "./ranker";
-import { TOPICS, topicMatches, type Topic } from "./topics";
 
 export interface AggregateOptions {
   query: string;
   perSourceLimit?: number;
   sources?: SourceName[];
-  topic?: Topic;
   countryCode?: string | null;
 }
 
@@ -40,12 +38,10 @@ const DEFAULT_SOURCES: SourceName[] = [
 
 export async function aggregate(opts: AggregateOptions): Promise<AggregateResult> {
   const limit = opts.perSourceLimit ?? 25;
-  const topic: Topic = opts.topic ?? "all";
-  const conceptId = TOPICS[topic]?.openalexConcept ?? null;
   const country = opts.countryCode ?? null;
 
   const registry: Record<Exclude<SourceName, "Unpaywall">, SourceFn> = {
-    OpenAlex: (q, l) => searchOpenAlex(q, l, { conceptId, countryCode: country }),
+    OpenAlex: (q, l) => searchOpenAlex(q, l, { countryCode: country }),
     CORE: searchCORE,
     arXiv: searchArXiv,
     DOAJ: (q, l) => searchDOAJ(q, l, { countryCode: country }),
@@ -81,14 +77,7 @@ export async function aggregate(opts: AggregateOptions): Promise<AggregateResult
     }
   });
 
-  const filtered =
-    topic === "all"
-      ? all
-      : all.filter((p) =>
-          topicMatches(topic, `${p.title} ${p.abstract ?? ""}`),
-        );
-
-  const merged = deduplicate(filtered);
+  const merged = deduplicate(all);
   await enrichCitationCounts(merged, { budgetMs: 2500, concurrency: 6 });
   const ordered = rank(merged, { query: opts.query });
 
