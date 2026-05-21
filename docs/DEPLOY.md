@@ -21,23 +21,25 @@ Save:
 - `DATABASE_URL=libsql://<...>.turso.io`
 - `DATABASE_AUTH_TOKEN=<token>`
 
-## 2. Run Prisma Migrations Against Turso
+## 2. Run Migrations Against Turso
 
-Local one-time push (uses `prisma.config.ts` URL builder that appends `authToken`):
+Prisma CLI's SQLite provider rejects `libsql://` URLs, so run the migration SQL through the libSQL client script:
 
 ```bash
 DATABASE_URL="libsql://<...>.turso.io" \
 DATABASE_AUTH_TOKEN="<token>" \
-pnpm exec prisma migrate deploy
+pnpm dlx tsx scripts/turso-migrate.ts
 ```
 
 Verify:
 
 ```bash
-turso db shell oaj-search "SELECT name FROM sqlite_master WHERE type='table';"
+DATABASE_URL="libsql://<...>.turso.io" \
+DATABASE_AUTH_TOKEN="<token>" \
+pnpm dlx tsx scripts/turso-verify.ts
 ```
 
-Expected tables: `Paper`, `Author`, `CachedQuery`, `CachedQueryResult`, `paper_fts`.
+Expected tables: `Paper`, `Author`, `CachedQuery`, `CachedQueryResult`, `paper_fts`, `_migrations`.
 
 ## 3. Push Code
 
