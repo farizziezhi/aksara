@@ -59,6 +59,22 @@ const querySchema = z
   );
 
 export async function GET(req: NextRequest) {
+  try {
+    return await handle(req);
+  } catch (err) {
+    const e = err as Error;
+    console.error("[/api/search] crash:", e?.stack ?? e);
+    return Response.json(
+      {
+        error: "SERVICE_UNAVAILABLE",
+        message: `Server error: ${e?.message ?? "unknown"}`,
+      },
+      { status: 500 },
+    );
+  }
+}
+
+async function handle(req: NextRequest) {
   const ip = getClientIp(req);
   const rl = searchLimiter.check(ip);
   if (!rl.allowed) {
