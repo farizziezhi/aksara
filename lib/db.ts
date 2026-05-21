@@ -7,10 +7,12 @@ declare global {
 }
 
 function createClient() {
-  const url =
+  const rawUrl =
     process.env.DATABASE_URL ??
     `file:${path.join(process.cwd(), "prisma", "dev.db")}`;
-  const authToken = process.env.DATABASE_AUTH_TOKEN;
+  const url = rawUrl.trim();
+  const rawToken = process.env.DATABASE_AUTH_TOKEN;
+  const authToken = rawToken ? rawToken.trim() : undefined;
   const adapter = new PrismaLibSql(authToken ? { url, authToken } : { url });
   return new PrismaClient({ adapter });
 }
