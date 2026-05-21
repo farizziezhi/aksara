@@ -1,12 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SearchBar } from "../components/SearchBar";
 import { ResultCard } from "../components/ResultCard";
 import { FilterPanel, type Filters } from "../components/FilterPanel";
-import { LoadingState } from "../components/LoadingState";
 import { ErrorState } from "../components/ErrorState";
 import { Pagination } from "../components/Pagination";
+import { SiteHeader } from "../components/SiteHeader";
+import { SiteFooter } from "../components/SiteFooter";
+import { ResultSkeletonList } from "../components/ResultSkeleton";
+import { EmptyState } from "../components/EmptyState";
 import type {
   SearchErrorResponse,
   SearchSuccessResponse,
@@ -29,6 +32,7 @@ export default function Home() {
   const [status, setStatus] = useState<Status>("idle");
   const [data, setData] = useState<SearchSuccessResponse | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const searchRef = useRef<HTMLInputElement | null>(null);
 
   const runSearch = useCallback(
     async (q: string, p: number, f: Filters, signal: AbortSignal) => {
@@ -84,6 +88,22 @@ export default function Home() {
     return () => ctrl.abort();
   }, [query, page, filters, runSearch]);
 
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const isCmd = e.metaKey || e.ctrlKey;
+      if (isCmd && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchRef.current?.focus();
+        searchRef.current?.select();
+      }
+      if (e.key === "Escape" && document.activeElement === searchRef.current) {
+        setQuery("");
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   const onQueryChange = useCallback((q: string) => {
     setQuery(q);
     setPage(1);
@@ -100,50 +120,17 @@ export default function Home() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="border-b border-hairline bg-canvas-white">
-        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-6 px-6 py-5">
-          <div className="flex items-center gap-2">
-            <span aria-hidden className="inline-flex h-7 w-7 items-center justify-center rounded-pill bg-button-black">
-              <span className="h-1.5 w-1.5 rounded-full bg-sky-teal" />
-            </span>
-            <span className="text-body font-semibold text-ink-black">
-              OAJournals
-            </span>
-          </div>
-          <nav className="hidden items-center gap-8 md:flex">
-            <a className="text-body-sm text-ink-black" href="#">
-              Cari
-            </a>
-            <a className="text-body-sm text-ash-gray hover:text-ink-black" href="#sumber">
-              Sumber
-            </a>
-            <a className="text-body-sm text-ash-gray hover:text-ink-black" href="#tentang">
-              Tentang
-            </a>
-          </nav>
-          <div className="flex items-center gap-3">
-            <a className="hidden text-body-sm text-ash-gray hover:text-ink-black sm:inline" href="#tentang">
-              Pelajari
-            </a>
-            <a
-              href="#cari"
-              className="rounded-pill bg-button-black px-[14px] py-[6px] text-body-sm text-canvas-white shadow-[var(--shadow-button)] transition hover:opacity-90"
-            >
-              Mulai cari
-            </a>
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
       <section className="border-b border-hairline bg-canvas-white">
-        <div className="mx-auto w-full max-w-[1200px] px-6 py-20 text-center">
-          <p className="font-caveat text-[24px] text-sky-teal">
+        <div className="mx-auto w-full max-w-[1200px] px-4 py-14 text-center sm:px-6 sm:py-20">
+          <p className="font-caveat text-[20px] text-sky-teal sm:text-[24px]">
             ribuan paper, satu pencarian
           </p>
-          <h1 className="mx-auto mt-4 max-w-3xl text-heading-lg font-semibold text-ink-black md:text-display">
+          <h1 className="mx-auto mt-4 max-w-3xl text-[34px] font-semibold leading-[1.1] tracking-tight text-ink-black sm:text-heading-lg md:text-display">
             Cari paper open-access seperti seorang peneliti.
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-body text-deep-slate">
+          <p className="mx-auto mt-6 max-w-xl text-body-sm text-deep-slate sm:text-body">
             Penelusuran terpadu lintas OpenAlex, CORE, arXiv, DOAJ, Crossref, dan Europe PMC.
             Bersih, ringan, tanpa biaya.
           </p>
@@ -170,33 +157,38 @@ export default function Home() {
         </div>
       </section>
 
-      <main id="cari" className="mx-auto w-full max-w-[1200px] flex-1 px-6 py-16">
+      <main id="cari" className="mx-auto w-full max-w-[1200px] flex-1 px-4 py-12 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-2xl">
-          <SearchBar onChange={onQueryChange} />
+          <SearchBar onChange={onQueryChange} inputRef={searchRef} />
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-[280px_1fr]">
+        <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-[280px_1fr] md:gap-10">
           <div className="md:order-1">
             <FilterPanel filters={filters} onChange={onFiltersChange} />
           </div>
 
           <section className="md:order-2">
             {status === "idle" ? (
-              <div className="rounded-card border border-dashed border-hairline bg-subtle-cream py-20 text-center">
-                <p className="text-body text-ash-gray">
-                  Ketik 3 karakter atau lebih untuk mulai mencari.
-                </p>
-              </div>
+              <EmptyState
+                illustration="search"
+                title="siap mencari"
+                body="Ketik 3 karakter atau lebih untuk mulai. Tekan Cmd/Ctrl + K untuk fokus ke pencarian dengan cepat."
+              />
             ) : status === "loading" ? (
-              <LoadingState />
+              <ResultSkeletonList count={5} />
             ) : status === "error" ? (
               <ErrorState message={errorMessage} onRetry={onRetry} />
             ) : data && data.results.length === 0 ? (
-              <div className="rounded-card border border-dashed border-hairline bg-subtle-cream py-20 text-center">
-                <p className="text-body text-ash-gray">
-                  Tidak ada hasil untuk &ldquo;{data.query}&rdquo;. Coba kata kunci lain.
-                </p>
-              </div>
+              <EmptyState
+                illustration="empty"
+                title="belum ketemu"
+                body={
+                  <>
+                    Tidak ada hasil untuk &ldquo;{data.query}&rdquo;.
+                    Coba kata kunci lain atau longgarkan filter.
+                  </>
+                }
+              />
             ) : data ? (
               <>
                 <div className="mb-6 flex flex-wrap items-baseline gap-3">
@@ -235,16 +227,7 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="border-t border-hairline bg-canvas-white">
-        <div className="mx-auto w-full max-w-[1200px] px-6 py-10 text-center">
-          <p className="font-caveat text-[24px] text-graphite">
-            built for curious minds.
-          </p>
-          <p className="mt-3 text-caption text-ash-gray">
-            Hasil di-cache 24 jam. Rate limit 30 permintaan per menit per IP.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
