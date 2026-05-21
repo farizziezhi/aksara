@@ -5,6 +5,7 @@ import { searchArXiv } from "./sources/arxiv";
 import { searchDOAJ } from "./sources/doaj";
 import { searchCrossref } from "./sources/crossref";
 import { searchEuropePMC } from "./sources/europepmc";
+import { searchPubMed } from "./sources/pubmed";
 import { enrichCitationCounts } from "./sources/opencitations";
 import { deduplicate } from "./deduplicator";
 import { rank } from "./ranker";
@@ -31,6 +32,7 @@ const REGISTRY: Record<Exclude<SourceName, "Unpaywall">, SourceFn> = {
   DOAJ: searchDOAJ,
   Crossref: searchCrossref,
   EuropePMC: searchEuropePMC,
+  PubMed: searchPubMed,
 };
 
 const DEFAULT_SOURCES: SourceName[] = [
@@ -40,6 +42,7 @@ const DEFAULT_SOURCES: SourceName[] = [
   "DOAJ",
   "Crossref",
   "EuropePMC",
+  "PubMed",
 ];
 
 export async function aggregate(opts: AggregateOptions): Promise<AggregateResult> {

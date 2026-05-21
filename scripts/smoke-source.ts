@@ -4,6 +4,7 @@ import { searchArXiv } from "../lib/sources/arxiv";
 import { searchDOAJ } from "../lib/sources/doaj";
 import { searchCrossref } from "../lib/sources/crossref";
 import { searchEuropePMC } from "../lib/sources/europepmc";
+import { searchPubMed } from "../lib/sources/pubmed";
 import { getCitationCount } from "../lib/sources/opencitations";
 import { getOpenAccessLink } from "../lib/sources/unpaywall";
 import type { PaperResult, SourceName } from "../types/paper";
@@ -44,6 +45,7 @@ async function main() {
   await run("DOAJ", () => searchDOAJ(query, 3));
   await run("Crossref", () => searchCrossref(query, 3));
   await run("EuropePMC", () => searchEuropePMC(query, 3));
+  await run("PubMed", () => searchPubMed(query, 3));
   await run("OpenCitations", async () => {
     const c = await getCitationCount(sampleDoi);
     return c === null ? "(no count)" : `count=${c}`;

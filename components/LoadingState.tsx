@@ -7,7 +7,7 @@ export function LoadingState() {
     >
       <div className="h-6 w-6 animate-spin rounded-full border-2 border-hairline border-t-sky-teal" />
       <p className="text-body-sm text-ash-gray">
-        Mencari paper di OpenAlex, CORE, arXiv, DOAJ, Crossref, Europe PMC...
+        Mencari paper di OpenAlex, CORE, arXiv, DOAJ, Crossref, Europe PMC, PubMed...
       </p>
     </div>
   );

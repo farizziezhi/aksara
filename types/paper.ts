@@ -5,6 +5,7 @@ export const SOURCE_NAMES = [
   "DOAJ",
   "Crossref",
   "EuropePMC",
+  "PubMed",
   "Unpaywall",
 ] as const;
 

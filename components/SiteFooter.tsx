@@ -56,6 +56,7 @@ export function SiteFooter() {
             <li>DOAJ</li>
             <li>Crossref</li>
             <li>Europe PMC</li>
+            <li>PubMed</li>
             <li>Unpaywall</li>
             <li>OpenCitations</li>
           </ul>

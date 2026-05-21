@@ -20,7 +20,7 @@ type Status = "idle" | "loading" | "success" | "error";
 const PAGE_SIZE = 10;
 
 const FEATURES = [
-  "6 sumber digabung",
+  "7 sumber digabung",
   "Cache 24 jam",
   "Open access prioritas",
 ];
@@ -131,7 +131,7 @@ export default function Home() {
             Cari paper open-access seperti seorang peneliti.
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-[14px] text-deep-slate sm:mt-6 sm:text-body">
-            Penelusuran terpadu lintas OpenAlex, CORE, arXiv, DOAJ, Crossref, dan Europe PMC.
+            Penelusuran terpadu lintas OpenAlex, CORE, arXiv, DOAJ, Crossref, Europe PMC, dan PubMed.
             Bersih, ringan, tanpa biaya.
           </p>
 

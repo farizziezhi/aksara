@@ -16,6 +16,7 @@ const SOURCES = [
   { name: "DOAJ", desc: "Directory of Open Access Journals, kurasi ketat." },
   { name: "Crossref", desc: "Metadata DOI + citation count komprehensif." },
   { name: "Europe PMC", desc: "Life sciences + biomedical, full-text OA." },
+  { name: "PubMed", desc: "NCBI, kedokteran + biomedical, 36+ juta abstrak." },
   { name: "Unpaywall", desc: "OA link lookup berdasarkan DOI." },
   { name: "OpenCitations", desc: "Enrichment citation count via DOI." },
 ];
