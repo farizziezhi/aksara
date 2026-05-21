@@ -10,7 +10,8 @@ function createClient() {
   const url =
     process.env.DATABASE_URL ??
     `file:${path.join(process.cwd(), "prisma", "dev.db")}`;
-  const adapter = new PrismaLibSql({ url });
+  const authToken = process.env.DATABASE_AUTH_TOKEN;
+  const adapter = new PrismaLibSql(authToken ? { url, authToken } : { url });
   return new PrismaClient({ adapter });
 }
 
