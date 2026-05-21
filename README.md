@@ -23,8 +23,6 @@
   <a href="#mulai-cepat">Mulai cepat</a>
   ·
   <a href="#deploy">Deploy</a>
-  ·
-  <a href="#keamanan">Keamanan</a>
 </p>
 
 ---
@@ -167,29 +165,7 @@ MAX_API_TIMEOUT_MS=5000
 
 ## Keamanan
 
-Aksara dirancang untuk endpoint publik. Mitigasi yang sudah aktif:
-
-| Vektor | Mitigasi |
-|---|---|
-| Brute force / scraping | Rate limit 30 req/menit per IP, header `Retry-After`, `X-RateLimit-*` |
-| DDoS L7 volumetric | Vercel Anycast + global edge, plus rate limit di handler |
-| SQL injection | Tidak ada string concat — semua via Prisma; FTS pakai `$queryRawUnsafe` dengan binding parameter |
-| XSS | React auto-escape, **tidak ada** `dangerouslySetInnerHTML`, `eval`, atau `innerHTML` |
-| Inline script abuse | Header `Content-Security-Policy` ketat |
-| Clickjacking | `X-Frame-Options: DENY` + `frame-ancestors 'none'` |
-| MIME sniffing | `X-Content-Type-Options: nosniff` |
-| Mixed content | `Strict-Transport-Security` + `upgrade-insecure-requests` |
-| Referer leak | `Referrer-Policy: strict-origin-when-cross-origin` |
-| Permissions abuse | `Permissions-Policy` blokir camera, mic, geolocation |
-| Server fingerprinting | `poweredByHeader: false` |
-| Open redirect | Tidak ada redirect dari input user |
-| Input validation | Zod ketat di `/api/search` dan `/api/related` |
-| Timeout / SSRF | `AbortSignal.timeout(5000)` di tiap fetch eksternal |
-| Secret leak | `.env*` di-gitignore (kecuali `.env.example`), token disimpan di Vercel env |
-
-Headers terpasang via [`next.config.ts`](./next.config.ts).
-
-> Endpoint publik tetap bergantung pada server eksternal. Aksara menanganinya dengan partial failure: jika satu sumber down, response tetap ok dengan field `sources_failed`.
+Endpoint publik dijaga dengan rate limit per IP, validasi input ketat (Zod), header keamanan standar (HSTS, CSP, X-Frame-Options, dll), dan timeout pada semua fetch eksternal. Detail tidak dipublikasikan; lihat `next.config.ts` dan `lib/rate-limit.ts` jika ingin audit sendiri.
 
 ## Struktur
 
