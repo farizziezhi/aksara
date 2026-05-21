@@ -165,7 +165,7 @@ MAX_API_TIMEOUT_MS=5000
 
 ## Keamanan
 
-Endpoint publik dijaga dengan rate limit per IP, validasi input ketat (Zod), header keamanan standar (HSTS, CSP, X-Frame-Options, dll), dan timeout pada semua fetch eksternal. Detail tidak dipublikasikan; lihat `next.config.ts` dan `lib/rate-limit.ts` jika ingin audit sendiri.
+Detail keamanan tidak dipublikasikan.
 
 ## Struktur
 
