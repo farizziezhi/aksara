@@ -75,6 +75,14 @@ export async function GET(req: NextRequest) {
 }
 
 async function handle(req: NextRequest) {
+  let stage = "start";
+  function tag(err: unknown): Error {
+    const e = err instanceof Error ? err : new Error(String(err));
+    e.message = `${stage}: ${e.message}`;
+    return e;
+  }
+
+  stage = "rate-limit";
   const ip = getClientIp(req);
   const rl = searchLimiter.check(ip);
   if (!rl.allowed) {
@@ -88,6 +96,7 @@ async function handle(req: NextRequest) {
     );
   }
 
+  stage = "parse";
   const url = new URL(req.url);
   const parsed = querySchema.safeParse({
     q: url.searchParams.get("q") ?? "",
@@ -128,15 +137,27 @@ async function handle(req: NextRequest) {
     sourceFilter = matched;
   }
 
+  stage = "cache-read";
   const hash = hashQuery(q);
 
-  let papers: PaperResult[] | null = await getCachedResult(hash);
+  let papers: PaperResult[] | null;
+  try {
+    papers = await getCachedResult(hash);
+  } catch (err) {
+    throw tag(err);
+  }
   let fromCache = papers !== null;
   let sourcesQueried: SourceName[] = [];
   let sourcesFailed: SourceName[] = [];
 
   if (!papers) {
-    const out = await aggregate({ query: q });
+    stage = "aggregate";
+    let out: Awaited<ReturnType<typeof aggregate>>;
+    try {
+      out = await aggregate({ query: q });
+    } catch (err) {
+      throw tag(err);
+    }
     sourcesQueried = out.sources_queried;
     sourcesFailed = out.sources_failed;
     papers = out.results;
